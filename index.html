@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="ko">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="theme-color" content="#f4f7ef" />
+		<title>곱셈 탐험대 | 3학년 수학</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet" />
+		<style>
+			:root {
+				color-scheme: light;
+				--ink: #203b37;
+				--muted: #71827b;
+				--paper: #fbfcf8;
+				--canvas: #f1f5eb;
+				--green: #287760;
+				--green-dark: #1d604d;
+				--mint: #e0f1e8;
+				--orange: #ee805b;
+				--yellow: #f5cd65;
+				--line: #e6ebe2;
+				--font-display: "Jua", "Gowun Dodum", sans-serif;
+				--font-body: "Gowun Dodum", sans-serif;
+			}
+
+			* { box-sizing: border-box; }
+
+			body {
+				min-width: 320px;
+				min-height: 100vh;
+				margin: 0;
+				color: var(--ink);
+				background-color: var(--canvas);
+				background-image: radial-gradient(#d6e3d5 0.8px, transparent 0.8px);
+				background-size: 19px 19px;
+				font-family: var(--font-body);
+			}
+
+			button, input { font: inherit; }
+			button { color: inherit; }
+
+			.page-shell {
+				width: min(100% - 48px, 1080px);
+				margin: 0 auto;
+			}
+
+			.topbar {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				min-height: 88px;
+			}
+
+			.brand {
+				display: inline-flex;
+				align-items: center;
+				gap: 11px;
+				color: var(--ink);
+				font-family: var(--font-display);
+				font-size: 23px;
+				text-decoration: none;
+			}
+
+			.brand-mark {
+				display: grid;
+				width: 38px;
+				aspect-ratio: 1;
+				place-items: center;
+				border-radius: 12px;
+				color: #fff;
+				background: var(--green);
+				font-size: 21px;
+				transform: rotate(-5deg);
+			}
+
+			.grade-tag {
+				padding: 8px 13px;
+				border: 1px solid #dce7d9;
+				border-radius: 6px;
+				color: var(--green-dark);
+				background: #fbfcf8;
+				font-size: 13px;
+			}
+
+			.app-layout {
+				display: grid;
+				grid-template-columns: minmax(260px, 0.82fr) minmax(460px, 1.18fr);
+				align-items: center;
+				gap: clamp(35px, 7vw, 96px);
+				min-height: calc(100vh - 112px);
+				padding: 14px 0 66px;
+			}
+
+			.intro { padding-bottom: 11px; }
+
+			.eyebrow {
+				display: inline-flex;
+				align-items: center;
+				gap: 8px;
+				margin: 0 0 17px;
+				color: var(--green);
+				font-size: 14px;
+			}
+
+			.eyebrow::before {
+				width: 8px;
+				height: 8px;
+				border-radius: 50%;
+				background: var(--orange);
+				content: "";
+			}
+
+			h1 {
+				margin: 0;
+				font-family: var(--font-display);
+				font-size: clamp(39px, 5vw, 57px);
+				font-weight: 400;
+				line-height: 1.2;
+			}
+
+			h1 span { color: var(--green); }
+
+			.intro-copy {
+				max-width: 330px;
+				margin: 18px 0 29px;
+				color: var(--muted);
+				font-size: 16px;
+				line-height: 1.8;
+			}
+
+			.scoreboard {
+				display: flex;
+				align-items: center;
+				gap: 14px;
+				width: fit-content;
+				padding: 11px 16px 11px 11px;
+				border: 1px solid #e5eadd;
+				border-radius: 7px;
+				background: #fbfcf8;
+			}
+
+			.score-icon {
+				display: grid;
+				width: 39px;
+				aspect-ratio: 1;
+				place-items: center;
+				border-radius: 6px;
+				color: #6a4c09;
+				background: #fff0c4;
+				font-size: 21px;
+			}
+
+			.score-label, .score-value { display: block; }
+			.score-label { color: var(--muted); font-size: 12px; }
+			.score-value { margin-top: 2px; font-family: var(--font-display); font-size: 19px; }
+			.score-value span { color: var(--green); }
+
+			.quiz-panel {
+				overflow: hidden;
+				border: 1px solid #e5eadd;
+				border-radius: 8px;
+				background: var(--paper);
+				box-shadow: 0 18px 54px #405b3d12;
+			}
+
+			.panel-top {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 15px;
+				padding: 24px 27px 19px;
+			}
+
+			.panel-title {
+				margin: 0;
+				font-family: var(--font-display);
+				font-size: 19px;
+				font-weight: 400;
+			}
+
+			.round-label { color: var(--muted); font-size: 13px; white-space: nowrap; }
+
+			.progress-track {
+				height: 5px;
+				margin: 0 27px;
+				overflow: hidden;
+				border-radius: 5px;
+				background: #e9eee6;
+			}
+
+			.progress-fill {
+				width: 10%;
+				height: 100%;
+				border-radius: inherit;
+				background: var(--green);
+				transition: width 240ms ease;
+			}
+
+			.quiz-content { padding: 24px 27px 28px; }
+
+			.mode-switch {
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				gap: 4px;
+				padding: 4px;
+				border-radius: 6px;
+				background: #f0f3ed;
+			}
+
+			.mode-button {
+				min-height: 38px;
+				padding: 7px 5px;
+				border: 0;
+				border-radius: 4px;
+				color: #718078;
+				background: transparent;
+				cursor: pointer;
+				font-size: 13px;
+				transition: color 150ms ease, background 150ms ease, box-shadow 150ms ease;
+			}
+
+			.mode-button[aria-pressed="true"] {
+				color: var(--green-dark);
+				background: #fff;
+				box-shadow: 0 1px 4px #243a3014;
+			}
+
+			.question-area {
+				display: grid;
+				min-height: 211px;
+				align-content: center;
+				justify-items: center;
+				padding: 19px 0 13px;
+			}
+
+			.question-hint { margin: 0 0 13px; color: var(--muted); font-size: 13px; }
+
+			.equation {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: clamp(12px, 4vw, 24px);
+				font-family: var(--font-display);
+				font-size: clamp(47px, 7vw, 66px);
+				line-height: 1.2;
+				font-variant-numeric: tabular-nums;
+			}
+
+			.multiply-sign { color: var(--orange); font-size: 0.78em; }
+			.equals-sign { color: #82928a; font-size: 0.72em; }
+
+			.answer-box {
+				width: 92px;
+				height: 76px;
+				padding: 0 8px;
+				border: 2px solid #d8e4d9;
+				border-radius: 7px;
+				outline: none;
+				color: var(--green-dark);
+				background: #fff;
+				font-family: var(--font-display);
+				font-size: 43px;
+				text-align: center;
+				transition: border-color 150ms ease, box-shadow 150ms ease;
+			}
+
+			.answer-box:focus { border-color: var(--green); box-shadow: 0 0 0 3px #2877601c; }
+			.answer-box:disabled { background: #f5f7f2; }
+
+			.feedback {
+				min-height: 27px;
+				margin: 9px 0 0;
+				color: var(--muted);
+				font-size: 14px;
+				text-align: center;
+			}
+
+			.feedback[data-state="right"] { color: var(--green-dark); }
+			.feedback[data-state="wrong"] { color: #bd5b3c; }
+
+			.action-row {
+				display: grid;
+				grid-template-columns: 1fr 1.7fr;
+				gap: 10px;
+				margin-top: 8px;
+			}
+
+			.action-button {
+				display: inline-flex;
+				min-height: 48px;
+				align-items: center;
+				justify-content: center;
+				gap: 7px;
+				padding: 10px 14px;
+				border: 1px solid transparent;
+				border-radius: 5px;
+				cursor: pointer;
+				font-size: 14px;
+				transition: background 150ms ease, transform 150ms ease;
+			}
+
+			.action-button:hover:not(:disabled) { transform: translateY(-1px); }
+			.action-button:focus-visible, .mode-button:focus-visible { outline: 3px solid #ee805b88; outline-offset: 2px; }
+
+			.hint-button { border-color: #e2e9df; color: #52665c; background: #fff; }
+			.hint-button:hover { background: #f6f8f3; }
+			.submit-button { color: #fff; background: var(--green); font-family: var(--font-display); font-size: 16px; }
+			.submit-button:hover:not(:disabled) { background: var(--green-dark); }
+			.submit-button:disabled { color: #87968d; background: #e9eee8; cursor: not-allowed; }
+
+			.hint-box {
+				margin-top: 13px;
+				padding: 11px 13px;
+				border-left: 3px solid var(--yellow);
+				border-radius: 3px;
+				color: #665526;
+				background: #fff8e5;
+				font-size: 13px;
+				line-height: 1.6;
+			}
+
+			[hidden] { display: none !important; }
+
+			.result-view { padding: 39px 27px 34px; text-align: center; }
+			.result-star { color: #e7ac36; font-size: 39px; }
+			.result-view h2 { margin: 9px 0 7px; font-family: var(--font-display); font-size: 29px; font-weight: 400; }
+			.result-copy { margin: 0 0 23px; color: var(--muted); line-height: 1.7; }
+			.result-score { display: inline-block; margin-bottom: 23px; color: var(--green); font-family: var(--font-display); font-size: 23px; }
+			.restart-button { width: 100%; }
+
+			.footer-note { margin: 19px 0 0; color: #8b9990; font-size: 12px; text-align: center; }
+
+			@media (max-width: 760px) {
+				.page-shell { width: min(100% - 32px, 520px); }
+				.topbar { min-height: 72px; }
+				.brand { font-size: 20px; }
+				.app-layout { grid-template-columns: 1fr; gap: 25px; min-height: auto; padding: 28px 0 42px; }
+				.intro { padding: 0 2px; }
+				h1 { font-size: 41px; }
+				.intro-copy { margin: 12px 0 17px; font-size: 15px; }
+				.scoreboard { padding: 8px 12px 8px 8px; }
+				.score-icon { width: 34px; }
+			}
+
+			@media (max-width: 420px) {
+				.page-shell { width: calc(100% - 24px); }
+				.topbar { min-height: 65px; }
+				.brand { gap: 8px; font-size: 18px; }
+				.brand-mark { width: 33px; border-radius: 10px; }
+				.grade-tag { padding: 7px 9px; font-size: 12px; }
+				.app-layout { padding-top: 22px; }
+				.panel-top { padding: 19px 17px 15px; }
+				.progress-track { margin: 0 17px; }
+				.quiz-content { padding: 19px 17px 21px; }
+				.question-area { min-height: 194px; }
+				.answer-box { width: 78px; height: 67px; font-size: 38px; }
+				.mode-button { font-size: 12px; }
+				.action-row { grid-template-columns: 1fr 1.5fr; gap: 8px; }
+				.action-button { padding: 9px 8px; font-size: 13px; }
+			}
+
+			@media (prefers-reduced-motion: reduce) {
+				*, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+			}
+		</style>
+	</head>
+	<body>
+		<div class="page-shell">
+			<header class="topbar">
+				<a class="brand" href="#" aria-label="곱셈 탐험대 처음으로">
+					<span class="brand-mark" aria-hidden="true">×</span>
+					<span>곱셈 탐험대</span>
+				</a>
+				<span class="grade-tag">초등 3학년 수학</span>
+			</header>
+
+			<main class="app-layout">
+				<section class="intro" aria-labelledby="page-title">
+					<p class="eyebrow">오늘의 수학 미션</p>
+					<h1 id="page-title">곱셈 실력,<br /><span>한 칸 더!</span></h1>
+					<p class="intro-copy">차근차근 풀다 보면 어느새 곱셈이 쉬워져요. 오늘의 문제에 도전해 볼까요?</p>
+					<div class="scoreboard" aria-live="polite">
+						<span class="score-icon" aria-hidden="true">★</span>
+						<span>
+							<span class="score-label">이번 도전에서 모은 별</span>
+							<span class="score-value"><span id="score">0</span>개 <span aria-hidden="true">·</span> 연속 정답 <span id="streak">0</span></span>
+						</span>
+					</div>
+				</section>
+
+				<section class="quiz-panel" aria-label="곱셈 문제 풀기">
+					<div id="quiz-view">
+						<div class="panel-top">
+							<h2 class="panel-title">곱셈 문제</h2>
+							<span class="round-label" id="round-label">문제 1 / 10</span>
+						</div>
+						<div class="progress-track" role="progressbar" aria-label="문제 진행" aria-valuemin="0" aria-valuemax="10" aria-valuenow="1">
+							<div class="progress-fill" id="progress-fill"></div>
+						</div>
+						<div class="quiz-content">
+							<div class="mode-switch" role="group" aria-label="문제 종류">
+								<button class="mode-button" type="button" data-mode="tables" aria-pressed="true">구구단</button>
+								<button class="mode-button" type="button" data-mode="two-digit" aria-pressed="false">두 자리 수</button>
+								<button class="mode-button" type="button" data-mode="mixed" aria-pressed="false">섞어서</button>
+							</div>
+
+							<form id="answer-form" novalidate>
+								<div class="question-area">
+									<p class="question-hint" id="question-hint">곱셈식을 보고 답을 써 보세요</p>
+									<div class="equation" aria-label="곱셈 문제">
+										<span id="factor-a">7</span>
+										<span class="multiply-sign" aria-hidden="true">×</span>
+										<span id="factor-b">8</span>
+										<span class="equals-sign" aria-hidden="true">=</span>
+										<input class="answer-box" id="answer" type="number" inputmode="numeric" min="0" max="999" autocomplete="off" aria-label="정답" />
+									</div>
+									<p class="feedback" id="feedback" role="status" aria-live="polite"></p>
+								</div>
+								<div class="action-row">
+									<button class="action-button hint-button" id="hint-button" type="button"><span aria-hidden="true">✳</span> 힌트 보기</button>
+									<button class="action-button submit-button" id="submit-button" type="submit">정답 확인</button>
+								</div>
+								<div class="hint-box" id="hint-box" role="status" hidden></div>
+							</form>
+						</div>
+					</div>
+
+					<div class="result-view" id="result-view" hidden>
+						<div class="result-star" aria-hidden="true">★</div>
+						<h2 id="result-title">멋진 도전이었어요!</h2>
+						<p class="result-copy" id="result-copy"></p>
+						<div class="result-score" id="result-score"></div>
+						<button class="action-button submit-button restart-button" id="restart-button" type="button">한 번 더 도전하기 <span aria-hidden="true">↻</span></button>
+					</div>
+				</section>
+			</main>
+			<p class="footer-note">서두르지 않아도 괜찮아요. 한 문제씩 풀어 봐요!</p>
+		</div>
+
+		<script>
+			(() => {
+				const totalQuestions = 10;
+				const answerForm = document.querySelector("#answer-form");
+				const answerInput = document.querySelector("#answer");
+				const submitButton = document.querySelector("#submit-button");
+				const feedback = document.querySelector("#feedback");
+				const hintBox = document.querySelector("#hint-box");
+				const quizView = document.querySelector("#quiz-view");
+				const resultView = document.querySelector("#result-view");
+				const modeButtons = [...document.querySelectorAll(".mode-button")];
+				const progressTrack = document.querySelector(".progress-track");
+				let mode = "tables";
+				let questionNumber = 1;
+				let score = 0;
+				let streak = 0;
+				let factors = [7, 8];
+				let locked = false;
+
+				function randomInteger(min, max) {
+					return Math.floor(Math.random() * (max - min + 1)) + min;
+				}
+
+				function createQuestion() {
+					const useTwoDigit = mode === "two-digit" || (mode === "mixed" && Math.random() < 0.5);
+					factors = useTwoDigit
+						? [randomInteger(11, 99), randomInteger(2, 9)]
+						: [randomInteger(2, 9), randomInteger(2, 9)];
+					document.querySelector("#factor-a").textContent = factors[0];
+					document.querySelector("#factor-b").textContent = factors[1];
+					document.querySelector("#question-hint").textContent = useTwoDigit
+						? "십의 자리와 일의 자리로 나누어 생각해 보세요"
+						: "곱셈식을 보고 답을 써 보세요";
+					answerInput.value = "";
+					answerInput.disabled = false;
+					submitButton.disabled = false;
+					submitButton.textContent = "정답 확인";
+					feedback.textContent = "";
+					feedback.dataset.state = "";
+					hintBox.hidden = true;
+					locked = false;
+					updateProgress();
+					answerInput.focus({ preventScroll: true });
+				}
+
+				function updateProgress() {
+					document.querySelector("#round-label").textContent = `문제 ${questionNumber} / ${totalQuestions}`;
+					document.querySelector("#progress-fill").style.width = `${(questionNumber / totalQuestions) * 100}%`;
+					progressTrack.setAttribute("aria-valuenow", questionNumber);
+				}
+
+				function updateScoreboard() {
+					document.querySelector("#score").textContent = score;
+					document.querySelector("#streak").textContent = streak;
+				}
+
+				function showHint() {
+					const [first, second] = factors;
+					if (first >= 10) {
+						const tens = Math.floor(first / 10) * 10;
+						const ones = first % 10;
+						hintBox.textContent = ones
+							? `${first}를 ${tens}과 ${ones}로 나누어 보세요. ${tens} × ${second}와 ${ones} × ${second}를 각각 계산한 뒤 더하면 돼요.`
+							: `${first}를 ${tens}으로 생각해 보세요. ${tens} × ${second}를 계산하면 돼요.`;
+					} else {
+						hintBox.textContent = `${first}를 ${second}번 더하는 것과 같아요. ${Array.from({ length: second }, () => first).join(" + ")}를 계산해 보세요.`;
+					}
+					hintBox.hidden = false;
+				}
+
+				function showResults() {
+					quizView.hidden = true;
+					resultView.hidden = false;
+					const perfect = score === totalQuestions;
+					document.querySelector("#result-title").textContent = perfect ? "완벽한 도전이에요!" : "멋진 도전이었어요!";
+					document.querySelector("#result-copy").textContent = perfect
+						? "열 문제를 모두 맞혔어요. 곱셈 실력이 쑥쑥 자랐네요!"
+						: `열 문제 중 ${score}문제를 맞혔어요. 다시 도전하면 더 익숙해질 거예요!`;
+					document.querySelector("#result-score").textContent = `★ ${score} / ${totalQuestions}개 정답`;
+					document.querySelector("#restart-button").focus();
+				}
+
+				function nextQuestion() {
+					if (questionNumber === totalQuestions) {
+						showResults();
+						return;
+					}
+					questionNumber += 1;
+					createQuestion();
+				}
+
+				answerForm.addEventListener("submit", (event) => {
+					event.preventDefault();
+					if (locked) {
+						nextQuestion();
+						return;
+					}
+					const value = answerInput.value.trim();
+					if (value === "") {
+						feedback.textContent = "답을 먼저 써 주세요.";
+						feedback.dataset.state = "wrong";
+						answerInput.focus();
+						return;
+					}
+
+					const isCorrect = Number(value) === factors[0] * factors[1];
+					if (isCorrect) {
+						score += 1;
+						streak += 1;
+						feedback.textContent = "정답이에요! 아주 잘했어요.";
+						feedback.dataset.state = "right";
+					} else {
+						streak = 0;
+						feedback.textContent = `아쉬워요. 정답은 ${factors[0] * factors[1]}이에요. 다음 문제도 풀어 볼까요?`;
+						feedback.dataset.state = "wrong";
+					}
+					updateScoreboard();
+					answerInput.disabled = true;
+					submitButton.textContent = questionNumber === totalQuestions ? "결과 보기" : "다음 문제";
+					locked = true;
+				});
+
+				document.querySelector("#hint-button").addEventListener("click", showHint);
+
+				modeButtons.forEach((button) => {
+					button.addEventListener("click", () => {
+						mode = button.dataset.mode;
+						modeButtons.forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
+						createQuestion();
+					});
+				});
+
+				document.querySelector("#restart-button").addEventListener("click", () => {
+					questionNumber = 1;
+					score = 0;
+					streak = 0;
+					updateScoreboard();
+					resultView.hidden = true;
+					quizView.hidden = false;
+					createQuestion();
+				});
+
+				createQuestion();
+			})();
+		</script>
+	</body>
+</html>
